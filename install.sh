@@ -21,7 +21,7 @@ NC=$'\e[0m'
 
 # Пути
 SHIELD_DIR="/opt/server-shield"
-GITHUB_RAW="https://raw.githubusercontent.com/wrx861/server-shield/main"
+GITHUB_RAW="https://raw.githubusercontent.com/qewrwersa/your-shield/main"
 
 # ============================================
 # PREMIUM UI ФУНКЦИИ

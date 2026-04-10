@@ -384,7 +384,7 @@ reconfigure_menu() {
         bash "$install_script" --reconfigure
     else
         log_step "Загрузка установщика..."
-        bash <(curl -fsSL https://raw.githubusercontent.com/wrx861/server-shield/main/install.sh) --reconfigure
+        bash <(curl -fsSL https://raw.githubusercontent.com/qewrwersa/your-shield/main/install.sh) --reconfigure
     fi
     
     press_any_key
@@ -402,7 +402,7 @@ _do_simple_update() {
     
     log_step "Проверка обновлений..."
     
-    local remote_ver=$(curl -fsSL --connect-timeout 5 "https://raw.githubusercontent.com/wrx861/server-shield/main/VERSION" 2>/dev/null | tr -d '[:space:]')
+    local remote_ver=$(curl -fsSL --connect-timeout 5 "https://raw.githubusercontent.com/qewrwersa/your-shield/main/VERSION" 2>/dev/null | tr -d '[:space:]')
     
     if [[ -z "$remote_ver" ]]; then
         log_error "Не удалось проверить обновления"
@@ -422,7 +422,7 @@ _do_simple_update() {
     if confirm_action "Обновить до $remote_ver?" "y"; then
         log_step "Скачивание обновлений..."
         
-        local GITHUB_RAW="https://raw.githubusercontent.com/wrx861/server-shield/main"
+        local GITHUB_RAW="https://raw.githubusercontent.com/qewrwersa/your-shield/main"
         local SHIELD_DIR="/opt/server-shield"
         
         local modules=("utils.sh" "ssh.sh" "keys.sh" "firewall.sh" "kernel.sh" "fail2ban.sh" "telegram.sh" "rkhunter.sh" "backup.sh" "status.sh" "menu.sh" "updater.sh" "l7shield.sh")

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/wrx861/server-shield/main/assets/logo.png" alt="Shield Logo" width="200"/>
+  <img src="https://raw.githubusercontent.com/qewrwersa/your-shield/main/assets/logo.png" alt="Shield Logo" width="200"/>
 </p>
 
 <h1 align="center">🛡️ Server Shield</h1>
@@ -112,7 +112,7 @@
 ### Быстрая установка
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wrx861/server-shield/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/qewrwersa/your-shield/main/install.sh)
 ```
 
 ### Требования
@@ -393,7 +393,7 @@ MIT License
 
 ## 💬 Support
 
-- **Issues:** [GitHub Issues](https://github.com/wrx861/server-shield/issues)
+- **Issues:** [GitHub Issues](https://github.com/qewrwersa/your-shield/issues)
 
 ---
 

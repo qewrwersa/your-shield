@@ -5,7 +5,7 @@
 
 source "$(dirname "$0")/utils.sh" 2>/dev/null || source "/opt/server-shield/modules/utils.sh"
 
-GITHUB_RAW="https://raw.githubusercontent.com/wrx861/server-shield/main"
+GITHUB_RAW="https://raw.githubusercontent.com/qewrwersa/your-shield/main"
 LOCAL_VERSION_FILE="/opt/server-shield/VERSION"
 UPDATE_CHECK_FILE="/opt/server-shield/config/last_update_check"
 UPDATE_CACHE_FILE="/opt/server-shield/config/update_cache"

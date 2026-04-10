@@ -32,32 +32,34 @@ detect_interface() {
 
 # Выбор интерфейса интерактивно
 select_interface() {
-    echo ""
-    echo -e "    ${WHITE}Доступные интерфейсы:${NC}"
-    
     local interfaces=()
     while IFS= read -r line; do
         local name=$(echo "$line" | awk '{print $1}' | tr -d '\r\n')
         [[ "$name" != "lo" ]] && interfaces+=("$name")
     done < <(ip -br link show | grep "UP")
-    
+
     if [[ ${#interfaces[@]} -eq 0 ]]; then
-        log_error "Нет активных сетевых интерфейсов"
+        log_error "Нет активных сетевых интерфейсов" >/dev/tty
         return 1
     fi
-    
-    local i=1
-    for iface in "${interfaces[@]}"; do
-        local ip_addr=$(ip -4 addr show "$iface" 2>/dev/null | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -1)
-        menu_item "$i" "$iface ${DIM}($ip_addr)${NC}"
-        ((i++))
-    done
-    
-    echo ""
+
+    # Весь вывод меню — в /dev/tty, чтобы не попасть в $()
+    {
+        echo ""
+        echo -e "    ${WHITE}Доступные интерфейсы:${NC}"
+        local i=1
+        for iface in "${interfaces[@]}"; do
+            local ip_addr=$(ip -4 addr show "$iface" 2>/dev/null | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -1)
+            menu_item "$i" "$iface ${DIM}($ip_addr)${NC}"
+            ((i++))
+        done
+        echo ""
+    } >/dev/tty
+
     local detected=$(detect_interface)
     local choice
     input_value "Выбор интерфейса" "$detected" choice
-    
+
     if [[ -z "$choice" ]]; then
         echo "$detected"
     elif [[ "$choice" =~ ^[0-9]+$ ]] && [[ "$choice" -ge 1 ]] && [[ "$choice" -le ${#interfaces[@]} ]]; then

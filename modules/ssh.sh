@@ -109,7 +109,7 @@ harden_ssh() {
     # Основные настройки безопасности
     declare -A ssh_settings=(
         ["Port"]="$new_port"
-        ["AddressFamily"]="inet"
+        ["AddressFamily"]="any"
         ["PermitRootLogin"]="prohibit-password"
         ["PasswordAuthentication"]="no"
         ["PubkeyAuthentication"]="yes"
@@ -166,15 +166,11 @@ BANNER
         log_step "Настройка ssh.socket на порт $new_port..."
         
         mkdir -p /etc/systemd/system/ssh.socket.d
-        cat > /etc/systemd/system/ssh.socket.d/override.conf << EOF
-[Socket]
-ListenStream=
-ListenStream=$new_port
-EOF
+        printf '[Socket]\nListenStream=\nListenStream=0.0.0.0:%s\nListenStream=[::]:%s\n' "$new_port" "$new_port" > /etc/systemd/system/ssh.socket.d/override.conf
         systemctl daemon-reload
         systemctl stop ssh.socket ssh.service 2>/dev/null
     fi
-    
+
     # Перезапуск SSH
     log_step "Перезапуск SSH..."
     restart_ssh_service "$new_port"
@@ -297,15 +293,14 @@ change_ssh_port() {
         echo "Port $new_port" >> "$SSH_CONFIG"
     fi
     
-    # 2.0.1 Отключаем IPv6 для SSH (чтобы не было доступа через IPv6 на старый порт)
+    # AddressFamily any — поддерживаем IPv4 и IPv6 (inet конфликтует с ssh.socket)
     if grep -q "^AddressFamily" "$SSH_CONFIG"; then
-        sed -i "s/^AddressFamily.*/AddressFamily inet/" "$SSH_CONFIG"
+        sed -i "s/^AddressFamily.*/AddressFamily any/" "$SSH_CONFIG"
     elif grep -q "^#AddressFamily" "$SSH_CONFIG"; then
-        sed -i "s/^#AddressFamily.*/AddressFamily inet/" "$SSH_CONFIG"
+        sed -i "s/^#AddressFamily.*/AddressFamily any/" "$SSH_CONFIG"
     else
-        echo "AddressFamily inet" >> "$SSH_CONFIG"
+        echo "AddressFamily any" >> "$SSH_CONFIG"
     fi
-    log_info "IPv6 для SSH отключен (AddressFamily inet)"
     
     # 2.0.2 Создаём директорию /run/sshd если не существует
     if [[ ! -d /run/sshd ]]; then
@@ -320,18 +315,14 @@ change_ssh_port() {
         
         # Создаём override для ssh.socket
         mkdir -p /etc/systemd/system/ssh.socket.d
-        cat > /etc/systemd/system/ssh.socket.d/override.conf << EOF
-[Socket]
-ListenStream=
-ListenStream=$new_port
-EOF
-        
+        printf '[Socket]\nListenStream=\nListenStream=0.0.0.0:%s\nListenStream=[::]:%s\n' "$new_port" "$new_port" > /etc/systemd/system/ssh.socket.d/override.conf
+
         # Перезагружаем systemd
         systemctl daemon-reload
-        
+
         # Останавливаем socket и сервис
         systemctl stop ssh.socket ssh.service 2>/dev/null
-        
+
         log_info "ssh.socket настроен на порт $new_port"
     fi
     

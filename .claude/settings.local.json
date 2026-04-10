@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(file install.sh modules/*.sh shield.sh uninstall.sh)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(file:*)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)",
+      "Bash(git checkout:*)"
+    ]
+  }
+}

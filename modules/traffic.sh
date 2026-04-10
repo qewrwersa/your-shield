@@ -23,9 +23,9 @@ MAX_BUCKETS=256
 
 # Автоопределение сетевого интерфейса
 detect_interface() {
-    local iface=$(ip route | grep default | awk '{print $5}' | head -1)
+    local iface=$(ip route | grep default | awk '{print $5}' | head -1 | tr -d '\r\n')
     if [[ -z "$iface" ]]; then
-        iface=$(ip -br link show | grep -v "lo" | grep "UP" | awk '{print $1}' | head -1)
+        iface=$(ip -br link show | grep -v "lo" | grep "UP" | awk '{print $1}' | head -1 | tr -d '\r\n')
     fi
     echo "${iface:-eth0}"
 }
@@ -37,7 +37,7 @@ select_interface() {
     
     local interfaces=()
     while IFS= read -r line; do
-        local name=$(echo "$line" | awk '{print $1}')
+        local name=$(echo "$line" | awk '{print $1}' | tr -d '\r\n')
         [[ "$name" != "lo" ]] && interfaces+=("$name")
     done < <(ip -br link show | grep "UP")
     

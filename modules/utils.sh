@@ -426,6 +426,7 @@ input_value() {
     fi
     
     read -r value
+    value="${value//$'\r'/}"
     value="${value:-$default}"
     
     if [[ -n "$var_name" ]]; then

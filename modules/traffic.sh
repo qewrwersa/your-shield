@@ -58,7 +58,19 @@ select_interface() {
 
     local detected=$(detect_interface)
     local choice
-    input_value "Выбор интерфейса" "$detected" choice
+
+    # Промпт явно в /dev/tty, чтобы не попасть в $() при захвате
+    {
+        echo ""
+        if [[ -n "$detected" ]]; then
+            echo -ne "    Выбор интерфейса [$detected]: "
+        else
+            echo -ne "    Выбор интерфейса: "
+        fi
+    } >/dev/tty
+    read -r choice </dev/tty
+    choice="${choice//$'\r'/}"
+    choice="${choice:-$detected}"
 
     if [[ -z "$choice" ]]; then
         echo "$detected"
